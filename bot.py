@@ -13,7 +13,7 @@ from telegram.constants import ParseMode
 
 from Operation import POSUtils
 from bot_utils import unlock_tickets
-
+from constants import NORMAL
 try:
     from telegram import __version_info__
 except ImportError:
@@ -123,7 +123,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if data[1] == "USERS":
             users_list = x.get_user_list()
             for user in users_list:
-                for r in x.get_report_by_user(user.get("id")):
+                for r in x.get_report_by_user(user.get("id"), NORMAL):
                     report_html = f'''
                     <pre>
                     <b>Reporte del Sistema {user.get("label")}</b>

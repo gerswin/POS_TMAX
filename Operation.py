@@ -145,7 +145,7 @@ class POSUtils(User, Activation, Ticket, TicketPrices, Event, TicketDesign):
         return response
 
     @staticmethod
-    def get_report_by_user(user_id, date=datetime.date.today()):
+    def get_report_by_user(user_id, activation_type=ESPECIAL,date=datetime.date.today()):
         response = []
         user = User.get(User.id == user_id)
         ticket_count = Ticket.select().where(Ticket.user_id == user).where(
@@ -156,7 +156,7 @@ class POSUtils(User, Activation, Ticket, TicketPrices, Event, TicketDesign):
         query = Ticket.select(Ticket.user_id, Ticket.ticket_price_id, Ticket.ticket_type, Ticket.ticket_price,
                               fn.SUM(Ticket.total), fn.SUM(Ticket.tax1),
                               fn.SUM(Ticket.tax2), fn.SUM(Ticket.base)).where(
-            Ticket.user_id == user).where(fn.DATE(Ticket.create_at) == date).group_by(Ticket.ticket_price_id).order_by(
+            Ticket.user_id == user).where(fn.DATE(Ticket.create_at) == date).group_by(Ticket.ticket_price_id).where(Ticket.activation_type == activation_type).order_by(
             Ticket.create_at.asc())
 
         for activation in query:
