@@ -13,7 +13,8 @@ from telegram.constants import ParseMode
 
 from Operation import POSUtils
 from bot_utils import unlock_tickets
-from constants import NORMAL
+from constants import NORMAL, ESPECIAL
+
 try:
     from telegram import __version_info__
 except ImportError:
@@ -113,7 +114,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         data = query.data.split("-")
         print(data)
         keyboard.append([InlineKeyboardButton("Empezar", callback_data="4")],
-)
+                        )
 
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text("Selecciona una cantidad:", reply_markup=reply_markup)
@@ -122,18 +123,20 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         data = query.data.split("-")
         if data[1] == "USERS":
             users_list = x.get_user_list()
+            print(users_list)
             for user in users_list:
-                for r in x.get_report_by_user(user.get("id"), NORMAL):
+                for r in x.get_report_by_user(user.get("id"), [NORMAL, ESPECIAL]):
+                    print(r)
                     report_html = f'''
                     <pre>
-                    <b>Reporte del Sistema {user.get("label")}</b>
+                    <b>Reporte para: {user.get("label")}</b>
                     <b>Conteo de Tickets:</b> {r.get('ticket_count')}
+                    <b>{r.get('ticket_name')}</b>
 
-                    <b>Base:</b> {'${:,.2f}'.format(r.get('base',0))}
-                    <b>Alcaldia:</b> {'${:,.2f}'.format(r.get('tax1',0))}
-                    <b>IVA:</b> {'${:,.2f}'.format(r.get('tax2',0))}
-                    <b>Total:</b> {'${:,.2f}'.format(r.get('total',0))}
-
+                    <b>Base:</b> {'${:,.2f}'.format(r.get('base', 0))}
+                    <b>Alcaldia:</b> {'${:,.2f}'.format(r.get('tax1', 0))}
+                    <b>IVA:</b> {'${:,.2f}'.format(r.get('tax2', 0))}
+                    <b>Total:</b> {'${:,.2f}'.format(r.get('total', 0))}
 
                     </pre>
 
@@ -148,10 +151,10 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 <pre>
                 <b>Reporte del Sistema POS</b>
 
-                <b>Base:</b> {'${:,.2f}'.format(r.get('base',0))}
-                <b>Alcaldia:</b> {'${:,.2f}'.format(r.get('tax1',0))}
-                <b>IVA:</b> {'${:,.2f}'.format(r.get('tax2',0))}
-                <b>Total:</b> {'${:,.2f}'.format(r.get('total',0))}
+                <b>Base:</b> {'${:,.2f}'.format(r.get('base', 0))}
+                <b>Alcaldia:</b> {'${:,.2f}'.format(r.get('tax1', 0))}
+                <b>IVA:</b> {'${:,.2f}'.format(r.get('tax2', 0))}
+                <b>Total:</b> {'${:,.2f}'.format(r.get('total', 0))}
 
                 <b>Conteo de Tickets:</b> {r.get('ticket_count')}
 
